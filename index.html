@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>IMKOMPRES — Platform Digital Kompres Gambar Gratis</title>
+  <meta name="description" content="Platform digital kompres gambar gratis. Kompres foto JPG, PNG, WEBP otomatis hingga di bawah 100KB langsung di browser secara privat, cepat, tanpa upload ke server." />
+  <meta name="keywords" content="kompres foto, kompres gambar, image compressor, platform digital kompres gambar gratis, compress jpg, compress png" />
+  <meta name="author" content="IMKOMPRES" />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:title" content="IMKOMPRES — Platform Digital Kompres Gambar Gratis" />
+  <meta property="og:description" content="Platform digital kompres gambar gratis. Kompres foto secara instan di browser, privat, tanpa kirim data ke server manapun." />
+  <meta property="og:image" content="https://imkompres.vercel.app/favicon.png" />
+  <meta property="og:url" content="https://imkompres.vercel.app" />
+  <meta property="og:type" content="website" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="IMKOMPRES — Platform Digital Kompres Gambar Gratis" />
+  <meta name="twitter:description" content="Platform digital kompres gambar gratis. Kompres foto secara instan di browser, privat, tanpa kirim data ke server manapun." />
+  <meta name="twitter:image" content="https://imkompres.vercel.app/logo.png" />
+
+  <link rel="icon" type="image/png" href="favicon.png" sizes="32x32" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%230b1322'/><text y='43' x='11' font-size='32' font-family='system-ui,-apple-system,sans-serif' font-weight='700' fill='%233b9eff'>IK</text></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    @import url('style.css');
+  </style>
+</head>
+<body>
+
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="#" class="brand">
+        <span class="brand-dot"></span>
+        IMKOMPRES
+      </a>
+      <div class="nav-right">
+        <span class="nav-chip">Client-Side · v2.1</span>
+        <button class="btn-donasi" onclick="openModal()">♥ Donasi</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="lo-ring"></div>
+    <p class="lo-title" id="loTitle">Sedang mengkompres gambar...</p>
+    <p class="lo-sub" id="loSub">Mengurai data piksel dari file</p>
+    <div class="lo-track">
+      <div class="lo-fill" id="loFill"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="donasiModal" onclick="handleModalClick(event)">
+    <div class="modal-box">
+      <div class="modal-top">
+        <p class="modal-top-title">Donasi via QRIS</p>
+        <button class="modal-close" onclick="closeModal()" aria-label="Tutup">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="qris-wrap">
+          <img src="qris.jpeg" alt="QRIS Donasi IMKOMPRES" onerror="this.parentNode.style.display='none';" />
+        </div>
+        <p class="modal-note">
+          Scan kode QRIS dengan aplikasi<br />
+          <strong>m-Banking atau Dompet Digital</strong> Anda.<br />
+          Terima kasih atas dukungannya! 🙏
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="hero-left">
+      <span class="hero-tag">Platform Digital Bebas Biaya</span>
+      <h1>Kompres Gambar <em>≤ 100KB.</em></h1>
+      <p class="hero-sub">Kecilkan ukuran file JPG, PNG & WEBP otomatis secara instan. Proses berjalan 100% lokal di browser tanpa risiko upload ke server.</p>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat-num">100KB</div>
+      <div class="hero-stat-label">Target Ukuran</div>
+    </div>
+  </section>
+
+  <div class="page-body">
+
+    <main class="compress-card">
+      <div class="card-header">
+        <span class="card-header-title">Workspace</span>
+        <span class="card-header-indicator">
+          <span class="indicator-dot"></span>
+          Siap digunakan
+        </span>
+      </div>
+      <div class="card-body">
+
+        <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.webp" style="display:none;" />
+
+        <div class="upload-zone" id="dropZone" role="button" tabindex="0" aria-label="Area upload gambar">
+          <div class="uz-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </div>
+          <p class="uz-title">Seret & Jatuhkan Gambar</p>
+          <p class="uz-meta">JPG, PNG, atau WEBP hingga 50MB</p>
+          <button class="btn-browse" onclick="document.getElementById('fileInput').click()">
+            Pilih File
+          </button>
+        </div>
+
+        <div class="error-box" id="errorBox">
+          <span id="errorMessage"></span>
+        </div>
+
+        <div class="result-wrap" id="resultSection">
+          <div class="result-label">
+            <span class="result-badge">Selesai</span>
+            <span class="result-title">Hasil Optimal Ditemukan</span>
+          </div>
+
+          <div class="result-grid">
+            <div class="result-preview">
+              <img src="" id="resultPreview" alt="Preview hasil" />
+            </div>
+
+            <div class="result-info">
+              <div class="stat-row">
+                <span class="stat-row-label">Ukuran Asli</span>
+                <span class="stat-row-val" id="origSizeStr">—</span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-row-label">Ukuran Hasil</span>
+                <span class="stat-row-val green" id="compSizeStr">—</span>
+              </div>
+              <div class="stat-row highlight">
+                <span class="stat-row-label">Kompresi</span>
+                <span class="stat-row-val" id="savePercentStr">—</span>
+              </div>
+              <a href="#" id="downloadBtn" download="imkompres_hasil.jpg" class="btn-download">
+                Unduh Gambar
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <aside class="sidebar">
+      <div class="sidebar-block">
+        <div class="sb-head">Format Kompatibel</div>
+        <div class="sb-body">
+          <div class="format-chips">
+            <span class="chip">JPG</span>
+            <span class="chip">JPEG</span>
+            <span class="chip">PNG</span>
+            <span class="chip">WEBP</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-block">
+        <div class="sb-head">Keamanan & Sistem</div>
+        <div class="sb-body">
+          <ul class="feature-list">
+            <li>
+              <strong>Jaminan Privasi 100%</strong>
+              Pemrosesan lokal memastikan aset Anda aman dari pengiriman luar.
+            </li>
+            <li>
+              <strong>Tanpa Registrasi</strong>
+              Gunakan alat kompresi penuh langsung tanpa perlu membuat akun.
+            </li>
+            <li>
+              <strong>Optimasi Otomatis</strong>
+              Mencari rasio kualitas vs ukuran file paling seimbang secara berkala.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-copy">&copy; 2026 <span>IMKOMPRES</span> — Platform kompresi gambar privasi penuh.</p>
+    </div>
+  </footer>
+
+  <script src="compress.js"></script>
+</body>
+</html>
