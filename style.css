@@ -466,6 +466,18 @@
       background: var(--ink);
     }
 
+    .chip.chip-new {
+      background: rgba(251, 191, 36, 0.12);
+      color: #fbbf24;
+      border-color: rgba(251, 191, 36, 0.25);
+    }
+     
+    .chip.chip-video {
+      background: rgba(139, 92, 246, 0.12);
+      color: #a78bfa;
+      border-color: rgba(139, 92, 246, 0.25);
+    }
+
     /* ══════════════════════════════════════
        LOADING OVERLAY
     ══════════════════════════════════════ */

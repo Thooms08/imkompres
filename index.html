@@ -4,21 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>IMKOMPRES — Platform Digital Kompres Gambar Gratis</title>
-  <meta name="description" content="Platform digital kompres gambar gratis. Kompres foto JPG, PNG, WEBP otomatis hingga di bawah 100KB langsung di browser secara privat, cepat, tanpa upload ke server." />
-  <meta name="keywords" content="kompres foto, kompres gambar, image compressor, platform digital kompres gambar gratis, compress jpg, compress png" />
+  <title>IMKOMPRES — Platform Digital Kompres Gambar & Video Gratis</title>
+  <meta name="description" content="Platform digital kompres gambar & video gratis. Kompres foto JPG, PNG, WEBP, GIF, dan Video otomatis langsung di browser secara privat, cepat, tanpa upload ke server." />
+  <meta name="keywords" content="kompres foto, kompres gambar, kompres video, image compressor, video compressor, platform digital kompres gambar gratis, compress jpg, compress png, compress gif, compress mp4" />
   <meta name="author" content="IMKOMPRES" />
   <meta name="robots" content="index, follow" />
 
-  <meta property="og:title" content="IMKOMPRES — Platform Digital Kompres Gambar Gratis" />
-  <meta property="og:description" content="Platform digital kompres gambar gratis. Kompres foto secara instan di browser, privat, tanpa kirim data ke server manapun." />
+  <meta property="og:title" content="IMKOMPRES — Platform Digital Kompres Gambar & Video Gratis" />
+  <meta property="og:description" content="Platform digital kompres gambar & video gratis. Kompres foto dan video secara instan di browser, privat, tanpa kirim data ke server manapun." />
   <meta property="og:image" content="https://imkompres.vercel.app/favicon.png" />
   <meta property="og:url" content="https://imkompres.vercel.app" />
   <meta property="og:type" content="website" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="IMKOMPRES — Platform Digital Kompres Gambar Gratis" />
-  <meta name="twitter:description" content="Platform digital kompres gambar gratis. Kompres foto secara instan di browser, privat, tanpa kirim data ke server manapun." />
+  <meta name="twitter:title" content="IMKOMPRES — Platform Digital Kompres Gambar & Video Gratis" />
+  <meta name="twitter:description" content="Platform digital kompres gambar & video gratis. Kompres foto dan video secara instan di browser, privat, tanpa kirim data ke server manapun." />
   <meta name="twitter:image" content="https://imkompres.vercel.app/logo.png" />
 
   <link rel="icon" type="image/png" href="favicon.png" />
@@ -41,7 +41,7 @@
         IMKOMPRES
       </a>
       <div class="nav-right">
-        <span class="nav-chip">Client-Side · v2.1</span>
+        <span class="nav-chip">Client-Side · v3.0</span>
         <button class="btn-donasi" onclick="openModal()">♥ Donasi</button>
       </div>
     </div>
@@ -49,8 +49,8 @@
 
   <div class="loading-overlay" id="loadingOverlay">
     <div class="lo-ring"></div>
-    <p class="lo-title" id="loTitle">Sedang mengkompres gambar...</p>
-    <p class="lo-sub" id="loSub">Mengurai data piksel dari file</p>
+    <p class="lo-title" id="loTitle">Sedang mengkompres...</p>
+    <p class="lo-sub" id="loSub">Mengurai data dari file</p>
     <div class="lo-track">
       <div class="lo-fill" id="loFill"></div>
     </div>
@@ -78,12 +78,14 @@
   <section class="hero">
     <div class="hero-left">
       <span class="hero-tag">Platform Digital Bebas Biaya</span>
-      <h1>Kompres Gambar <em>Gratis & Aman.</em></h1>
-      <p class="hero-sub">Kecilkan ukuran file JPG, PNG & WEBP otomatis secara instan. Proses berjalan 100% lokal di browser tanpa risiko upload ke server.</p>
+      <h1>Kompres Gambar &amp; Video <em>Gratis &amp; Aman.</em></h1>
+      <p class="hero-sub">Kecilkan ukuran file JPG, PNG, WEBP, GIF &amp; Video otomatis secara instan. Proses berjalan 100% lokal di browser tanpa risiko upload ke server.</p>
     </div>
     <div class="hero-right">
-      <div class="hero-stat-num">100KB</div>
-      <div class="hero-stat-label">Target Ukuran</div>
+      <div class="hero-stat-num">&lt;100KB</div>
+      <div class="hero-stat-label">Target Gambar &amp; GIF</div>
+      <div class="hero-stat-num" style="margin-top:0.75rem;font-size:clamp(1.4rem,4vw,2.2rem)">&lt;40MB</div>
+      <div class="hero-stat-label">Target Video</div>
     </div>
   </section>
 
@@ -99,18 +101,21 @@
       </div>
       <div class="card-body">
 
-        <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.webp" style="display:none;" />
+        <!-- Updated accept: tambah gif dan video formats -->
+        <input type="file" id="fileInput"
+               accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.webm,.mov,.avi,.mkv"
+               style="display:none;" />
 
-        <div class="upload-zone" id="dropZone" role="button" tabindex="0" aria-label="Area upload gambar">
+        <div class="upload-zone" id="dropZone" role="button" tabindex="0" aria-label="Area upload gambar atau video">
           <div class="uz-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"></path>
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="17 8 12 3 7 8"></polyline>
               <line x1="12" y1="3" x2="12" y2="15"></line>
             </svg>
           </div>
-          <p class="uz-title">Seret & Jatuhkan Gambar</p>
-          <p class="uz-meta">JPG, PNG, atau WEBP hingga 50MB</p>
+          <p class="uz-title">Seret &amp; Jatuhkan File</p>
+          <p class="uz-meta">JPG, PNG, WEBP, GIF hingga 50MB &nbsp;·&nbsp; Video MP4/WEBM/MOV hingga 500MB</p>
           <button class="btn-browse" onclick="document.getElementById('fileInput').click()">
             Pilih File
           </button>
@@ -129,6 +134,7 @@
           <div class="result-grid">
             <div class="result-preview">
               <img src="" id="resultPreview" alt="Preview hasil" />
+              <!-- Video preview will be injected here by JS when needed -->
             </div>
 
             <div class="result-info">
@@ -145,7 +151,7 @@
                 <span class="stat-row-val" id="savePercentStr">—</span>
               </div>
               <a href="#" id="downloadBtn" download="imkompres_hasil.jpg" class="btn-download">
-                Unduh Gambar
+                Unduh File
               </a>
             </div>
           </div>
@@ -163,12 +169,37 @@
             <span class="chip">JPEG</span>
             <span class="chip">PNG</span>
             <span class="chip">WEBP</span>
+            <span class="chip chip-new">GIF</span>
+            <span class="chip chip-video">MP4</span>
+            <span class="chip chip-video">WEBM</span>
+            <span class="chip chip-video">MOV</span>
+            <span class="chip chip-video">AVI</span>
           </div>
         </div>
       </div>
 
       <div class="sidebar-block">
-        <div class="sb-head">Keamanan & Sistem</div>
+        <div class="sb-head">Target Kompresi</div>
+        <div class="sb-body">
+          <ul class="feature-list">
+            <li>
+              <strong>Gambar (JPG/PNG/WEBP)</strong>
+              Dikompres otomatis hingga di bawah <strong>100 KB</strong> dengan kualitas visual optimal.
+            </li>
+            <li>
+              <strong>GIF Animasi</strong>
+              Dikompres hingga di bawah <strong>100 KB</strong>. GIF besar akan dikonversi ke frame terbaik dalam format JPG.
+            </li>
+            <li>
+              <strong>Video (MP4/WEBM/MOV/AVI)</strong>
+              Dikompres otomatis hingga di bawah <strong>40 MB</strong> menggunakan canvas re-encoding. Input maks 500 MB.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sidebar-block">
+        <div class="sb-head">Keamanan &amp; Sistem</div>
         <div class="sb-body">
           <ul class="feature-list">
             <li>
@@ -192,7 +223,7 @@
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <p class="footer-copy">&copy; 2026 <span>IMKOMPRES</span> — Platform kompresi gambar privasi penuh.</p>
+      <p class="footer-copy">&copy; 2026 <span>IMKOMPRES</span> — Platform kompresi gambar &amp; video privasi penuh.</p>
     </div>
   </footer>
 
