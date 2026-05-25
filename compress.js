@@ -1,7 +1,6 @@
 /* =========================================================
-   IMKOMPRES — compress.js  v3.0
+   IMKOMPRES — compress.js  v3.1
    Supports: JPG, PNG, WEBP (→ <100 KB)
-             GIF               (→ <100 KB, frame sampling)
              Video MP4/WEBM/MOV/AVI (→ <40 MB, canvas re-encode)
    All processing is 100% client-side.
    ========================================================= */
@@ -29,13 +28,6 @@
      ['Mengoptimalkan kualitas file…', 'Menyeimbangkan kualitas vs ukuran'],
      ['Memfinalisasi hasil…',          'Menyiapkan file untuk diunduh'],
    ];
-   const stepsGif = [
-     ['Membaca file GIF…',             'Mengurai frame-frame animasi'],
-     ['Menganalisis frame GIF…',       'Menghitung jumlah frame & dimensi'],
-     ['Sampling & resize frame…',      'Mengurangi frame berlebih'],
-     ['Mengkompres setiap frame…',     'Menurunkan kualitas canvas'],
-     ['Memfinalisasi GIF…',            'Menyiapkan file untuk diunduh'],
-   ];
    const stepsVideo = [
      ['Membaca file video…',           'Memuat metadata durasi & codec'],
      ['Menghitung bitrate target…',    'Menetapkan parameter kompresi'],
@@ -46,7 +38,7 @@
  
    function setLoading(active, pct = 0, step = 0, mode = 'image') {
      if (active) {
-       const steps = mode === 'video' ? stepsVideo : mode === 'gif' ? stepsGif : stepsImage;
+       const steps = mode === 'video' ? stepsVideo : stepsImage;
        const [t, s] = steps[Math.min(step, steps.length - 1)];
        loTitle.textContent = t;
        loSub.textContent   = s;
@@ -94,17 +86,14 @@
      const videoTypes = ['video/mp4','video/webm','video/ogg','video/quicktime','video/x-msvideo','video/avi','video/x-matroska'];
      const imageTypes = ['image/jpeg','image/jpg','image/png','image/webp'];
  
-     if (file.type === 'image/gif') {
-       if (file.size > 50 * 1024 * 1024) { showError('File GIF terlalu besar. Maksimal 50MB.'); return; }
-       processGif(file);
-     } else if (imageTypes.includes(file.type)) {
+     if (imageTypes.includes(file.type)) {
        if (file.size > 50 * 1024 * 1024) { showError('File terlalu besar. Maksimal input 50MB.'); return; }
        processImage(file);
      } else if (videoTypes.includes(file.type) || file.name.match(/\.(mp4|webm|mov|avi|mkv)$/i)) {
        if (file.size > 500 * 1024 * 1024) { showError('File video terlalu besar. Maksimal 500MB.'); return; }
        processVideo(file);
      } else {
-       showError('Format tidak didukung. Gunakan JPG, PNG, WEBP, GIF, atau Video (MP4/WEBM/MOV/AVI).');
+       showError('Format tidak didukung. Gunakan JPG, PNG, WEBP, atau Video (MP4/WEBM/MOV/AVI).');
      }
    }
  
@@ -172,109 +161,14 @@
    }
  
    // ══════════════════════════════════════════════════════
-   //  GIF — target < 100 KB via canvas frame re-render
-   //  Strategy: decode frames via <canvas> trick on <img>,
-   //  reduce dimensions & quality, re-export as JPEG sequence
-   //  wrapped in a data URI. Since browsers can't re-encode
-   //  animated GIF natively, we output the best single
-   //  representative frame as JPEG when size exceeds target,
-   //  OR keep the original GIF if already small enough.
-   //  For true animated output we use the GIF size reduction
-   //  approach: if original < 100KB → pass through as-is,
-   //  otherwise canvas-compress a representative frame.
-   // ══════════════════════════════════════════════════════
-   function processGif(file) {
-     setLoading(true, 10, 0, 'gif');
- 
-     // If already under target, pass through
-     if (file.size <= 100 * 1024) {
-       const reader = new FileReader();
-       reader.readAsDataURL(file);
-       reader.onload = ev => {
-         setLoading(true, 100, 4, 'gif');
-         setTimeout(() => {
-           setLoading(false);
-           showResult(ev.target.result, file.size, file.size, file.name, '.gif', 'imkompres_');
-         }, 300);
-       };
-       return;
-     }
- 
-     // GIF too large — render first frame to canvas, compress as JPEG
-     setLoading(true, 25, 1, 'gif');
-     const url = URL.createObjectURL(file);
-     const img  = new Image();
-     img.src    = url;
-     img.onload = () => {
-       setLoading(true, 50, 2, 'gif');
-       URL.revokeObjectURL(url);
- 
-       const TARGET = 100 * 1024;
-       let width    = img.width;
-       let height   = img.height;
-       let quality  = 0.82;
-       let iter     = 0;
- 
-       const canvas = document.createElement('canvas');
-       const ctx    = canvas.getContext('2d');
- 
-       function iterate() {
-         iter++;
-         canvas.width  = width;
-         canvas.height = height;
-         ctx.clearRect(0, 0, width, height);
-         ctx.drawImage(img, 0, 0, width, height);
- 
-         const dataUrl = canvas.toDataURL('image/jpeg', quality);
-         const curSize = Math.round(dataUrl.split(',')[1].length * (3 / 4));
- 
-         setLoading(true, Math.min(55 + iter * 7, 90), Math.min(2 + Math.floor(iter / 3), 3), 'gif');
- 
-         if (curSize <= TARGET || quality <= 0.15) {
-           if (curSize > TARGET && width > 200) {
-             width   = Math.round(width * 0.8);
-             height  = Math.round(height * 0.8);
-             quality = 0.72;
-             setTimeout(iterate, 10);
-           } else {
-             setLoading(true, 100, 4, 'gif');
-             setTimeout(() => {
-               setLoading(false);
-               // Note: output is JPEG (best quality from GIF frame)
-               const base = file.name.replace(/\.gif$/i, '');
-               showResult(dataUrl, file.size, curSize, base + '.jpg', '.jpg', 'imkompres_gif_');
-             }, 350);
-           }
-         } else {
-           quality = Math.max(quality - 0.10, 0.10);
-           setTimeout(iterate, 10);
-         }
-       }
-       iterate();
-     };
-     img.onerror = () => { setLoading(false); showError('Gagal membaca file GIF.'); };
-   }
- 
-   // ══════════════════════════════════════════════════════
    //  VIDEO — target < 40 MB using MediaRecorder + Canvas
-   //  Approach:
-   //   1. Load video into <video> element (blob URL)
-   //   2. Determine scale factor & bitrate from file size
-   //   3. Seek & capture frames via requestAnimationFrame
-   //      into an OffscreenCanvas / Canvas
-   //   4. Pipe canvas.captureStream() into MediaRecorder
-   //      (VP8/VP9 or H264 depending on browser support)
-   //   5. Collect Blob chunks → download
    // ══════════════════════════════════════════════════════
    function processVideo(file) {
      setLoading(true, 5, 0, 'video');
  
-     const MAX_TARGET_BYTES = 40 * 1024 * 1024;  // 40 MB hard ceiling
+     const MAX_TARGET_BYTES = 40 * 1024 * 1024;
      const origSize         = file.size;
  
-     // ── Target size: ALWAYS smaller than original ──────
-     // If file > 40MB  → target = 40MB
-     // If file <= 40MB → target = 70% of original (always shrink)
      const TARGET_BYTES = origSize > MAX_TARGET_BYTES
        ? MAX_TARGET_BYTES
        : Math.floor(origSize * 0.70);
@@ -300,30 +194,20 @@
        const origW = videoEl.videoWidth  || 1280;
        const origH = videoEl.videoHeight || 720;
  
-       // ── Compute compression ratio ──────────────────
-       // How much we need to shrink: e.g. 4MB → target 2.8MB = ratio 0.70
-       const sizeRatio = TARGET_BYTES / origSize;  // always < 1.0
+       const sizeRatio = TARGET_BYTES / origSize;
  
-       // ── Scale dimensions by sqrt of size ratio ─────
-       // Area scales as square of linear dimension, so halving area = 0.707x linear
        let scaleFactor = Math.sqrt(sizeRatio);
-       scaleFactor = Math.min(0.95, Math.max(0.20, scaleFactor)); // clamp 20%–95%
+       scaleFactor = Math.min(0.95, Math.max(0.20, scaleFactor));
  
        const outW = Math.max(128, Math.round(origW * scaleFactor / 2) * 2);
        const outH = Math.max(72,  Math.round(origH * scaleFactor / 2) * 2);
  
-       // ── Target bitrate ─────────────────────────────
-       // budget = TARGET_BYTES * 8 bits, 85% for video stream
        const videoBudgetBits = TARGET_BYTES * 8 * 0.85;
        const targetBitrate   = Math.floor(videoBudgetBits / duration);
-       // Hard cap: never exceed 6 Mbps (keeps file lean), min 80 Kbps
        const clampedBitrate  = Math.min(6_000_000, Math.max(80_000, targetBitrate));
  
-       // ── FPS: reduce for small files to help codec ──
-       // Smaller target → lower fps to reduce overhead
        const fps = sizeRatio < 0.3 ? 15 : sizeRatio < 0.6 ? 20 : 25;
  
-       // ── Detect supported codec ─────────────────────
        const mimeOptions = [
          'video/webm;codecs=vp9',
          'video/webm;codecs=vp8',
@@ -343,13 +227,11 @@
  
        const ext = chosenMime.includes('mp4') ? '.mp4' : '.webm';
  
-       // ── Setup canvas ───────────────────────────────
        const canvas = document.createElement('canvas');
        canvas.width  = outW;
        canvas.height = outH;
        const ctx = canvas.getContext('2d');
  
-       // ── Setup MediaRecorder ────────────────────────
        const stream = canvas.captureStream(fps);
        const chunks = [];
        let   recorder;
@@ -378,8 +260,7 @@
          }, 350);
        };
  
-       // ── Frame rendering loop ───────────────────────
-       recorder.start(200);  // collect chunks every 200ms
+       recorder.start(200);
        setLoading(true, 25, 2, 'video');
  
        videoEl.currentTime = 0;
@@ -404,7 +285,6 @@
          if (currentTime < duration - 0.1 && !videoEl.ended && !videoEl.paused) {
            requestAnimationFrame(renderFrame);
          } else {
-           // Done — wait a tiny bit then stop recorder
            setTimeout(() => recorder.stop(), 300);
          }
        }
@@ -436,7 +316,6 @@
      compSizeStr.textContent    = fmtBytes(compSize);
      savePercentStr.textContent = savings + '%';
  
-     // Preview
      resultPreview.src              = dataUrl;
      resultPreview.style.display    = 'block';
      const videoPreview = document.getElementById('resultPreviewVideo');
@@ -457,7 +336,6 @@
      compSizeStr.textContent    = fmtBytes(compSize);
      savePercentStr.textContent = savings + '%';
  
-     // Show video preview element, hide image
      resultPreview.style.display    = 'none';
      let videoPreview = document.getElementById('resultPreviewVideo');
      if (!videoPreview) {
@@ -471,7 +349,6 @@
      videoPreview.src           = blobUrl;
      videoPreview.style.display = 'block';
  
-     // Download via Blob
      downloadBtn.href = blobUrl;
      downloadBtn.setAttribute('download', filename);
  

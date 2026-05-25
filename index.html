@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>IMKOMPRES — Platform Digital Kompres Gambar & Video Gratis</title>
-  <meta name="description" content="Platform digital kompres gambar & video gratis. Kompres foto JPG, PNG, WEBP, GIF, dan Video otomatis langsung di browser secara privat, cepat, tanpa upload ke server." />
-  <meta name="keywords" content="kompres foto, kompres gambar, kompres video, image compressor, video compressor, platform digital kompres gambar gratis, compress jpg, compress png, compress gif, compress mp4" />
+  <meta name="description" content="Platform digital kompres gambar & video gratis. Kompres foto JPG, PNG, WEBP, dan Video otomatis langsung di browser secara privat, cepat, tanpa upload ke server." />
+  <meta name="keywords" content="kompres foto, kompres gambar, kompres video, image compressor, video compressor, platform digital kompres gambar gratis, compress jpg, compress png, compress mp4" />
   <meta name="author" content="IMKOMPRES" />
   <meta name="robots" content="index, follow" />
 
@@ -41,7 +41,7 @@
         IMKOMPRES
       </a>
       <div class="nav-right">
-        <span class="nav-chip">Client-Side · v3.0</span>
+        <span class="nav-chip">Client-Side · v3.1</span>
         <button class="btn-donasi" onclick="openModal()">♥ Donasi</button>
       </div>
     </div>
@@ -79,11 +79,11 @@
     <div class="hero-left">
       <span class="hero-tag">Platform Digital Bebas Biaya</span>
       <h1>Kompres Gambar &amp; Video <em>Gratis &amp; Aman.</em></h1>
-      <p class="hero-sub">Kecilkan ukuran file JPG, PNG, WEBP, GIF &amp; Video otomatis secara instan. Proses berjalan 100% lokal di browser tanpa risiko upload ke server.</p>
+      <p class="hero-sub">Kecilkan ukuran file JPG, PNG, WEBP &amp; Video otomatis secara instan. Proses berjalan 100% lokal di browser tanpa risiko upload ke server.</p>
     </div>
     <div class="hero-right">
       <div class="hero-stat-num">&lt;100KB</div>
-      <div class="hero-stat-label">Target Gambar &amp; GIF</div>
+      <div class="hero-stat-label">Target Gambar</div>
       <div class="hero-stat-num" style="margin-top:0.75rem;font-size:clamp(1.4rem,4vw,2.2rem)">&lt;40MB</div>
       <div class="hero-stat-label">Target Video</div>
     </div>
@@ -101,9 +101,8 @@
       </div>
       <div class="card-body">
 
-        <!-- Updated accept: tambah gif dan video formats -->
         <input type="file" id="fileInput"
-               accept=".jpg,.jpeg,.png,.webp,.gif,.mp4,.webm,.mov,.avi,.mkv"
+               accept=".jpg,.jpeg,.png,.webp,.mp4,.webm,.mov,.avi,.mkv"
                style="display:none;" />
 
         <div class="upload-zone" id="dropZone" role="button" tabindex="0" aria-label="Area upload gambar atau video">
@@ -115,7 +114,7 @@
             </svg>
           </div>
           <p class="uz-title">Seret &amp; Jatuhkan File</p>
-          <p class="uz-meta">JPG, PNG, WEBP, GIF hingga 50MB &nbsp;·&nbsp; Video MP4/WEBM/MOV hingga 500MB</p>
+          <p class="uz-meta">JPG, PNG, WEBP hingga 50MB &nbsp;·&nbsp; Video MP4/WEBM/MOV hingga 500MB</p>
           <button class="btn-browse" onclick="document.getElementById('fileInput').click()">
             Pilih File
           </button>
@@ -169,7 +168,6 @@
             <span class="chip">JPEG</span>
             <span class="chip">PNG</span>
             <span class="chip">WEBP</span>
-            <span class="chip chip-new">GIF</span>
             <span class="chip chip-video">MP4</span>
             <span class="chip chip-video">WEBM</span>
             <span class="chip chip-video">MOV</span>
@@ -185,10 +183,6 @@
             <li>
               <strong>Gambar (JPG/PNG/WEBP)</strong>
               Dikompres otomatis hingga di bawah <strong>100 KB</strong> dengan kualitas visual optimal.
-            </li>
-            <li>
-              <strong>GIF Animasi</strong>
-              Dikompres hingga di bawah <strong>100 KB</strong>. GIF besar akan dikonversi ke frame terbaik dalam format JPG.
             </li>
             <li>
               <strong>Video (MP4/WEBM/MOV/AVI)</strong>
